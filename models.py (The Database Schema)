@@ -1,0 +1,21 @@
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.orm import declarative_base, sessionmaker
+
+# Uses SQLite locally, easy to swap to PostgreSQL later
+SQLALCHEMY_DATABASE_URL = "sqlite:///./venture.db"
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    email = Column(String, unique=True, index=True)
+    role = Column(String) # Startup, Investor, Mentor
+    company = Column(String)
+    industry = Column(String, nullable=True)
+
+Base.metadata.create_all(bind=engine)
